@@ -1,1 +1,6 @@
 export const FETCH_SESSIONS = 'FETCH_SESSIONS';
+export const SELECT_DAY = 'SELECT_DAY';
+export const FETCH_VENUES_TYPES = 'FETCH_VENUES_TYPES';
+export const SELECT_VENUE = 'SELECT_VENUE';
+export const SELECT_TYPE = 'SELECT_TYPE';
+
