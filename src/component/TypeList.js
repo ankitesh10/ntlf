@@ -15,10 +15,11 @@ class TypeList extends React.Component {
 
   renderType() {
     //   console.log(this.props.types)
-    return this.props.types.map((type, index) => {
+    const typesKeyArr = Object.keys(this.props.types);  
+    return typesKeyArr.map((type, index) => {
       return (
         <option key={index} value={type}>
-          {type}
+          {this.props.types[type].name}
         </option>
       );
     });
@@ -27,7 +28,7 @@ class TypeList extends React.Component {
   render() {
     return(
         <select value={this.props.selectedType} onChange={(e) => this.onTypeChange(e.target.value)}>
-            <option value={true} key="all">ALL</option>
+            <option value="all" key="all">ALL</option>
             {this.renderType()}
         </select>
     )
@@ -36,7 +37,7 @@ class TypeList extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    types: Object.keys(state.options.types),
+    types: state.options.types,
     selectedType: state.options.selectedType
   };
 };

@@ -1,6 +1,8 @@
 export const FETCH_SESSIONS = 'FETCH_SESSIONS';
 export const SELECT_DAY = 'SELECT_DAY';
 export const FETCH_VENUES_TYPES = 'FETCH_VENUES_TYPES';
+export const EMPTY_VENUES = 'EMPTY_VENUES';
+export const FETCH_VENUES = 'FETCH_VENUES';
 export const SELECT_VENUE = 'SELECT_VENUE';
 export const SELECT_TYPE = 'SELECT_TYPE';
 

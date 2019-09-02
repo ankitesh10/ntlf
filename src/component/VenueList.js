@@ -26,7 +26,7 @@ class VenueList extends React.Component {
   render() {
     return(
         <select value={this.props.selectedVenue} onChange={(e) => this.onVenueChange(e.target.value)}>
-            <option value={true} key="all">ALL</option>
+            <option value="all" key="all">ALL</option>
             {this.renderVenue()}
         </select>
     )
