@@ -7,6 +7,8 @@ import {
   FETCH_VENUES_TYPES,
   FETCH_VENUES,
   EMPTY_VENUES,
+  DELETE_SESSION,
+  UPDATE_SESSIONS,
   SELECT_VENUE,
   SELECT_TYPE
 } from "./types";
@@ -37,9 +39,17 @@ export const fetchVenues = () => async dispatch => {
   dispatch({ type: FETCH_VENUES, payload: response.data });
 };
 
+export const deleteSession = session => {
+  return { type: DELETE_SESSION, payload: session };
+};
+
+export const updateSessions = key => {
+  return { type: UPDATE_SESSIONS, payload: key };
+};
+
 export const emptyVenues = () => {
-    return {type: EMPTY_VENUES}
-}
+  return { type: EMPTY_VENUES };
+};
 
 export const selectDay = day => {
   return { type: SELECT_DAY, payload: day };

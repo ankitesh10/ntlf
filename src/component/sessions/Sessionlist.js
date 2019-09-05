@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { fetchSessions, fetchVenues, emptyVenues } from "../../actions";
+import { fetchSessions, updateSessions } from "../../actions";
 
 class SessionList extends React.Component {
   componentDidMount() {
@@ -18,74 +18,67 @@ class SessionList extends React.Component {
   };
 
 
+ 
   renderSession() {
-    let updatedVenue = {};
-    let i = 0;
 
+    let updatedSessionsKey = [];
 
-    return this.props.sessions.map( (session) => {
-
+    return this.props.sessions.map((session, index, sessions) => {
       // if venue and type is set to all
 
+      
       if (
         this.calculateDay(session.event_start_day) === this.props.day &&
         this.props.selectedVenue === "all" &&
-        this.props.selectedType === 'all'
+        this.props.selectedType === "all"
       ) {
         return <li key={session.event_key}>{session.name}</li>;
       }
 
       // if only type is set to all
-
       if (
         this.calculateDay(session.event_start_day) === this.props.day &&
         session.venue === this.props.selectedVenue &&
-        this.props.selectedType === 'all'        
+        this.props.selectedType === "all"
       ) {
-
+        updatedSessionsKey.push(session.event_key);
+        // update sessions
+        if(sessions.length - 1 === index){
+          console.log(1);
+          this.props.updateSessions(updatedSessionsKey);
+        }
         return <li key={session.event_key}>{session.name}</li>;
       }
-
-
-      // if venue is set to all
 
       if (
         this.calculateDay(session.event_start_day) === this.props.day &&
-        this.props.selectedVenue === 'all' && 
-        (session.event_type === this.props.types[this.props.selectedType].name )        
+        this.props.selectedVenue === "all" &&
+        session.event_type === this.props.types[this.props.selectedType].name
       ) {
-
-        if(i === 0){
-          this.props.emptyVenues();
+        updatedSessionsKey.push(session.event_key);
+        // update sessions
+        if(sessions.length - 1 === index){
+          console.log(index);
+          console.log(1);
+          this.props.updateSessions(updatedSessionsKey);
         }
 
-        console.log(i);
-
-
-        updatedVenue[session.venue] = session.venue
-
-        // console.log(sessions.length);
-        // console.log(index);
-
-        this.props.fetchVenues(updatedVenue);
-
-
-        // if(index + 1 === sessions.length){
-        //   console.log(updatedVenue);
-        // }
-        i++;
         return <li key={session.event_key}>{session.name}</li>;
-
       }
 
+    
+      if(sessions.length - 1 === index){
+        console.log(1);
+        this.props.updateSessions(updatedSessionsKey);
+      }
 
+     
 
       return null;
     });
   }
 
   render() {
-    // console.log(this.props.sessions);
     return <ul>{this.renderSession()}</ul>;
   }
 }
@@ -102,5 +95,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchSessions, fetchVenues, emptyVenues }
+  { fetchSessions, updateSessions }
 )(SessionList);
