@@ -1,12 +1,81 @@
 import React from "react";
 import { connect } from "react-redux";
+import _ from "lodash";
 
-import { fetchSessions, updateSessions } from "../../actions";
+import {
+  fetchSessions,
+  updateSessions,
+  updateSessionsKeys
+} from "../../actions";
 
 class SessionList extends React.Component {
   componentDidMount() {
     this.props.fetchSessions();
   }
+
+  componentDidUpdate(ownProps) {
+    const updatedSessionKeys = this.getUpdatedSessionsKeys();
+
+
+    if (
+      !_.isEqual(ownProps.activeKeys, updatedSessionKeys) &&
+      updatedSessionKeys.length > 0
+    ) {
+      this.props.updateSessionsKeys(updatedSessionKeys);
+    }
+  }
+
+  getUpdatedSessionsKeys = () => {
+    let updatedSessionsKeys = [];
+
+    let sessionsValues = Object.values(this.props.sessions);
+
+    sessionsValues.forEach(session => {
+      // if only type is set to all
+
+      if (
+        this.calculateDay(session.event_start_day) === this.props.day &&
+        session.venue === this.props.selectedVenue &&
+        this.props.selectedType === "all"
+      ) {
+        updatedSessionsKeys.push(session.event_key);
+      }
+
+      // if only venue is set to all
+
+      if (
+        this.calculateDay(session.event_start_day) === this.props.day &&
+        this.props.selectedVenue === "all" &&
+        this.props.types[this.props.selectedType] &&
+        session.event_type === this.props.types[this.props.selectedType]
+      ) {
+        updatedSessionsKeys.push(session.event_key);
+      }
+
+      // if both are set 
+
+      if (
+        this.calculateDay(session.event_start_day) === this.props.day &&
+        session.venue === this.props.selectedVenue &&
+        this.props.types[this.props.selectedType] &&
+        session.event_type === this.props.types[this.props.selectedType]
+      ) {
+        updatedSessionsKeys.push(session.event_key);
+      }
+
+      // if both are set to all
+
+      if (
+        this.calculateDay(session.event_start_day) === this.props.day &&
+        this.props.selectedVenue === "all" &&
+        this.props.selectedType === "all"
+      ) {
+        updatedSessionsKeys.push(session.event_key);
+      }
+    });
+
+    return updatedSessionsKeys;
+  };
 
   calculateDay = startDate => {
     if (startDate === "20") {
@@ -17,64 +86,10 @@ class SessionList extends React.Component {
     return 3;
   };
 
-
- 
   renderSession() {
-
-    let updatedSessionsKey = [];
-
-    return this.props.sessions.map((session, index, sessions) => {
-      // if venue and type is set to all
-
-      
-      if (
-        this.calculateDay(session.event_start_day) === this.props.day &&
-        this.props.selectedVenue === "all" &&
-        this.props.selectedType === "all"
-      ) {
-        return <li key={session.event_key}>{session.name}</li>;
-      }
-
-      // if only type is set to all
-      if (
-        this.calculateDay(session.event_start_day) === this.props.day &&
-        session.venue === this.props.selectedVenue &&
-        this.props.selectedType === "all"
-      ) {
-        updatedSessionsKey.push(session.event_key);
-        // update sessions
-        if(sessions.length - 1 === index){
-          console.log(1);
-          this.props.updateSessions(updatedSessionsKey);
-        }
-        return <li key={session.event_key}>{session.name}</li>;
-      }
-
-      if (
-        this.calculateDay(session.event_start_day) === this.props.day &&
-        this.props.selectedVenue === "all" &&
-        session.event_type === this.props.types[this.props.selectedType].name
-      ) {
-        updatedSessionsKey.push(session.event_key);
-        // update sessions
-        if(sessions.length - 1 === index){
-          console.log(index);
-          console.log(1);
-          this.props.updateSessions(updatedSessionsKey);
-        }
-
-        return <li key={session.event_key}>{session.name}</li>;
-      }
-
-    
-      if(sessions.length - 1 === index){
-        console.log(1);
-        this.props.updateSessions(updatedSessionsKey);
-      }
-
-     
-
-      return null;
+    let { sessions, activeKeys } = this.props;
+    return activeKeys.map(key => {
+        return <li key={key}>{sessions[key].name}</li>;
     });
   }
 
@@ -85,7 +100,8 @@ class SessionList extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    sessions: Object.values(state.sessions),
+    sessions: state.sessions.sessionsList,
+    activeKeys: state.sessions.activeKeys,
     day: state.options.day,
     types: state.options.types,
     selectedVenue: state.options.selectedVenue,
@@ -95,5 +111,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchSessions, updateSessions }
+  { fetchSessions, updateSessions, updateSessionsKeys }
 )(SessionList);

@@ -4,16 +4,13 @@ import { KEY } from "../apis/key";
 import {
   FETCH_SESSIONS,
   SELECT_DAY,
-  FETCH_VENUES_TYPES,
-  FETCH_VENUES,
-  EMPTY_VENUES,
-  DELETE_SESSION,
   UPDATE_SESSIONS,
+  UPDATE_SESSIONS_KEYS,
+  UPDATE_VENUES,
+  UPDATE_TYPES,
   SELECT_VENUE,
   SELECT_TYPE
 } from "./types";
-
-//https://nasscomtechnologyleadership2019.sched.com/api/site/sync?api_key=a279dc441b8e6b2f46cb0a2f325b38d7&format=json&modify_date=0
 
 export const fetchSessions = () => async dispatch => {
   const response = await nasscom.get(
@@ -23,33 +20,23 @@ export const fetchSessions = () => async dispatch => {
   dispatch({ type: FETCH_SESSIONS, payload: response.data });
 };
 
-export const fetchVenuesAndTypes = () => async dispatch => {
-  const response = await nasscom.get(
-    `/site/sync?api_key=${KEY}&format=json&modify_date=0`
-  );
-
-  dispatch({ type: FETCH_VENUES_TYPES, payload: response.data });
-};
-
-export const fetchVenues = () => async dispatch => {
-  const response = await nasscom.get(
-    `/site/sync?api_key=${KEY}&format=json&modify_date=0`
-  );
-
-  dispatch({ type: FETCH_VENUES, payload: response.data });
-};
-
-export const deleteSession = session => {
-  return { type: DELETE_SESSION, payload: session };
-};
-
 export const updateSessions = key => {
   return { type: UPDATE_SESSIONS, payload: key };
 };
 
-export const emptyVenues = () => {
-  return { type: EMPTY_VENUES };
-};
+
+export const updateVenues = venues => {
+  return { type: UPDATE_VENUES, payload: venues}
+}
+
+
+export const updateTypes = types => {
+  return { type: UPDATE_TYPES, payload: types}
+}
+
+export const updateSessionsKeys = keys => {
+  return {type: UPDATE_SESSIONS_KEYS, payload: keys};
+}
 
 export const selectDay = day => {
   return { type: SELECT_DAY, payload: day };
